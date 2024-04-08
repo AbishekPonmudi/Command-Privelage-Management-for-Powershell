@@ -1,0 +1,57 @@
+# Load the Windows Forms assembly
+Add-Type -AssemblyName System.Windows.Forms
+
+# Define variables
+$registryKey = "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System"
+$registryValueName = "DisableCMD"
+$username = "3677"
+$password = "3677"
+
+# Function to set registry value
+function Set-RegistryValue {
+    param (
+        [string]$key,
+        [string]$valueName,
+        [int]$valueData
+    )
+
+    Set-ItemProperty -Path $key -Name $valueName -Value $valueData -ErrorAction Stop
+}
+
+# Function to close the PowerShell window
+function Close-PowerShellWindow {
+    $host.SetShouldExit(0)
+}
+
+# Enable command prompt and PowerShell with user authentication
+try {
+    # Set registry value to enable command prompt
+    Set-RegistryValue -Key $registryKey -ValueName $registryValueName -ValueData 0
+
+    $authenticated = $false
+
+    while (-not $authenticated) {
+        # Prompt user for credentials
+        $credential = Get-Credential -Message "Enter your credentials"
+
+        # Check if the user canceled the prompt
+        if ($credential -eq $null) {
+            Write-Host "Credential prompt canceled. PowerShell remains usable."
+            Close-PowerShellWindow
+        }
+
+        # Validate user credentials
+        elseif ($credential.UserName -eq $username -and $credential.GetNetworkCredential().Password -eq $password) {
+            Write-Host "Authentication successful. Access granted."
+            $authenticated = $true
+            # Do further operations within the same PowerShell session
+        } else {
+            Write-Host "Authentication failed. Access denied."
+        }
+    }
+
+    # Additional operations can be performed here if needed after successful authentication
+
+} catch {
+    Write-Host "Error occurred: $_"
+}
