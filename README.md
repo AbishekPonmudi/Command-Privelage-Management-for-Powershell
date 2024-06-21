@@ -38,7 +38,7 @@ for more information first Run the 'install.bat'.
 For uninstall this authenticator Simply run this application either powershell or manuallly
 
 ```bash
-./uninstall.bat
+./uninstall.bat 
 ```
 
 If it not works on windows 11 and This feature may not applicable with windows 10 and below that so then after installation run this command whether using windows 10 or below that
