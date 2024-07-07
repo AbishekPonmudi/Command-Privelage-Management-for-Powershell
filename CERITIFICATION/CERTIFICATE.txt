@@ -1,0 +1,28 @@
+.\signtool.exe sign /sha1 "71DE32EB3286B3108C9EBF29518D97756542938F" /tr "http://timestamp.digicert.com" /td SHA256 /fd SHA256 /v "C:\Users\Abishek\Documents\powershell project\POWERSHELL_PRODUCTION\setup.exe"
+The following certificate was selected:
+    Issued to: PowerShell Code Signing
+    Issued by: PowerShell Code Signing
+    Expires:   Tue Apr 29 09:55:32 2025
+    SHA1 hash: 71DE32EB3286B3108C9EBF29518D97756542938F
+
+Done Adding Additional Store
+Successfully signed: C:\Users\Abishek\Documents\powershell project\POWERSHELL_PRODUCTION\setup.exe
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+PS C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64>
+
+for digitally signing a PowerShell script and configuring the execution policy on a target computer
+
+# Define the paths
+$scriptPath = "C:\Users\Abishek\Documents\powershell project\POWERSHELL_PRODUCTION\setup.exe"
+$thumbprint = "71DE32EB3286B3108C9EBF29518D97756542938F"  # Replace with your certificate's thumbprint
+
+# Step 1: Digitally sign the script using the certificate's thumbprint
+Set-AuthenticodeSignature -FilePath $scriptPath -Certificate (Get-ChildItem -Path cert:\LocalMachine\My | Where-Object { $_.Thumbprint -eq $thumbprint }) -TimestampServer "http://timestamp.digicert.com"
+
+# Step 2: Configure execution policy
+$executionPolicy = "RemoteSigned"  # or "AllSigned" based on your preference
+Set-ExecutionPolicy -Scope LocalMachine -ExecutionPolicy $executionPolicy -Force
+
